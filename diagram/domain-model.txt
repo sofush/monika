@@ -1,0 +1,14 @@
+@startuml
+scale 1920*1080
+class Medarbejder {
+	navn
+	aftaler
+}
+class Aftale {
+	id
+	tidsrum
+	kunde
+	fase
+}
+Medarbejder " 1" -r- " 0..m" Aftale
+@enduml
