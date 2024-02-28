@@ -12,7 +12,7 @@ class Aftale {
 	+ kunde: String
 	+ fase: Fase
 	+ Aftale(start, stop, kunde, fase)
-	+ bool konflikterMed(Aftale anden)
+	+ boolean konflikterMed(Aftale anden)
 }
 enum Fase {
 	Planlagt
