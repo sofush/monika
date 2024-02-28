@@ -2,14 +2,19 @@
 scale 1920*1080
 skinparam classAttributeIconSize 0
 class Medarbejder {
-	+ NAVN: String
-	+ aftaler: Aftale[]
+	+ navn: String
+	+ Medarbejder(navn)
+}
+class Kunde {
+	+ navn: String
+	+ Kunde(navn)
 }
 class Aftale {
 	+ ID: UUID
 	+ start: LocalDateTime
-	+ stop: LocalDateTime
-	+ kunde: String
+	+ slut: LocalDateTime
+	+ kunde: Kunde
+	+ medarbejder: Medarbejder
 	+ fase: Fase
 	+ Aftale(start, stop, kunde, fase)
 	+ boolean konflikterMed(Aftale anden)
@@ -25,11 +30,14 @@ class Database {
 	+ Database(String brugernavn, String kodeord)
 	+ void indsaetAftale(Aftale aftale)
 	+ void indsaetMedarbejder(Medarbejder medarbejder)
-	+ Aftale indlaesAftale(UUID id)
-	+ Medarbejder indlaesMedarbejder(String navn)
+	+ void indsaetKunde(Kunde kunde)
+	+ List<Aftale> indlaesAftaler(String medarbejder, LocalDateTime min, LocalDateTime max)
+	+ List<Medarbejder> indlaesMedarbejdere()
 }
 Fase "1" -r* "1" Aftale
-Aftale "0..m" -r* "1" Medarbejder
+Aftale "1" -r* "\t\t1" Kunde
+Aftale "1" -r* "1" Medarbejder
 Medarbejder <.. Database
+Kunde <.. Database
 Aftale <.. Database
 @enduml
