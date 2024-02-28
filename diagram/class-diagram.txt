@@ -1,0 +1,34 @@
+@startuml
+scale 1920*1080
+skinparam classAttributeIconSize 0
+class Medarbejder {
+	+ NAVN: String
+	+ aftaler: Aftale[]
+}
+class Aftale {
+	+ ID: UUID
+	+ start: LocalDateTime
+	+ stop: LocalDateTime
+	+ kunde: String
+	+ fase: Fase
+	+ bool konflikter(Aftale anden)
+}
+enum Fase {
+	Planlagt
+	Begyndt
+	Afsluttet
+	Aflyst
+}
+class Database {
+	- {field} conn: java.sql.Connection
+	+ Database(String brugernavn, String kodeord)
+	+ void indsaetAftale(Aftale aftale)
+	+ void indsaetMedarbejder(Medarbejder medarbejder)
+	+ Aftale indlaesAftale(UUID id)
+	+ Medarbejder indlaesMedarbejder(String navn)
+}
+Fase "1" -r* "1" Aftale
+Aftale "0..m" -r* "1" Medarbejder
+Medarbejder <.. Database
+Aftale <.. Database
+@enduml
