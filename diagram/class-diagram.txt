@@ -11,7 +11,8 @@ class Aftale {
 	+ stop: LocalDateTime
 	+ kunde: String
 	+ fase: Fase
-	+ bool konflikter(Aftale anden)
+	+ Aftale(start, stop, kunde, fase)
+	+ bool konflikterMed(Aftale anden)
 }
 enum Fase {
 	Planlagt
