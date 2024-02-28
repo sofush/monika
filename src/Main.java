@@ -1,6 +1,7 @@
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,8 +20,26 @@ public class Main {
 
         List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
         valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
-            System.out.println("Ikke implementeret.");
-            System.exit(1);
+            String kunde = prompt("Indtast kundens navn:");
+            LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
+            LocalDateTime stop;
+
+            while (true) {
+                stop = LocalDateTime.parse(prompt("Indtast stoptidspunkt:"));
+
+                if (stop.isAfter(start)) {
+                    break;
+                }
+
+                System.out.println("Fejl: stoptidspunkt må ikke være tidligere end starttidspunktet.");
+            }
+
+            List<Valgmulighed<Fase>> faseValgmuligheder = Arrays.stream(Fase.values()).map((fase) ->
+                    new Valgmulighed<>(fase.toString(), () -> fase)).toList();
+            Menu<Fase> faseMenu = new Menu<>(faseValgmuligheder);
+            Fase fase = faseMenu.aktiver();
+
+            UseCase.opretAftale(db, start, stop, kunde, fase);
             return null;
         }));
         valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {
