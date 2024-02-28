@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,29 +17,34 @@ public class Main {
         String kodeord = prompt("Indtast kodeord:");
         final Database db = new Database(brugernavn, kodeord);
 
-        List<Valgmulighed> valgmuligheder = new ArrayList<>();
-        valgmuligheder.add(new Valgmulighed("Opret en aftale", () -> {
+        List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
+        valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
             System.out.println("Ikke implementeret.");
             System.exit(1);
+            return null;
         }));
-        valgmuligheder.add(new Valgmulighed("Indlæs aftaler", () -> {
+        valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {
             System.out.println("Ikke implementeret.");
             System.exit(1);
+            return null;
         }));
-        valgmuligheder.add(new Valgmulighed("Ret en aftale", () -> {
+        valgmuligheder.add(new Valgmulighed<>("Ret en aftale", () -> {
             System.out.println("Ikke implementeret.");
             System.exit(1);
+            return null;
         }));
-        valgmuligheder.add(new Valgmulighed("Tilføj ny medarbejder", () -> {
+        valgmuligheder.add(new Valgmulighed<>("Tilføj ny medarbejder", () -> {
             System.out.println("Ikke implementeret.");
             System.exit(1);
+            return null;
         }));
-        valgmuligheder.add(new Valgmulighed("Slet en medarbejder", () -> {
+        valgmuligheder.add(new Valgmulighed<>("Slet en medarbejder", () -> {
             System.out.println("Ikke implementeret.");
             System.exit(1);
+            return null;
         }));
 
-        Menu menu = new Menu(valgmuligheder);
+        Menu<Void> menu = new Menu<>(valgmuligheder);
         menu.aktiver();
     }
 }

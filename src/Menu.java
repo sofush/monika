@@ -30,19 +30,19 @@ class IndeksGenerator {
     }
 }
 
-public class Menu {
-    private final List<Valgmulighed> valgmuligheder;
+public class Menu<T> {
+    private final List<Valgmulighed<T>> valgmuligheder;
 
-    public Menu(List<Valgmulighed> valgmuligheder) {
+    public Menu(List<Valgmulighed<T>> valgmuligheder) {
         this.valgmuligheder = valgmuligheder;
     }
 
-    public void aktiver() {
+    public T aktiver() {
         System.out.println("Vælg en af valgmulighederne:");
         IndeksGenerator gen = new IndeksGenerator();
         List<String> indekser = new ArrayList<>();
 
-        for (Valgmulighed valgmulighed : this.valgmuligheder) {
+        for (Valgmulighed<T> valgmulighed : this.valgmuligheder) {
             String indeks = gen.naeste();
             indekser.add(indeks);
             System.out.println(indeks + ") " + valgmulighed.beskrivelse());
@@ -54,7 +54,7 @@ public class Menu {
         int i = indekser.indexOf(indtastning);
 
         if (i == -1) {
-            Optional<Valgmulighed> valgmulighed = this.valgmuligheder.stream().filter((v) ->
+            Optional<Valgmulighed<T>> valgmulighed = this.valgmuligheder.stream().filter((v) ->
                     v.beskrivelse().equalsIgnoreCase(indtastning)).findFirst();
 
             if (valgmulighed.isPresent()) {
@@ -65,6 +65,6 @@ public class Menu {
             }
         }
 
-        this.valgmuligheder.get(i).aktiver();
+        return this.valgmuligheder.get(i).aktiver();
     }
 }
