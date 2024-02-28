@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,7 +11,7 @@ public class Main {
         return sc.nextLine();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         String brugernavn = prompt("Indtast brugernavn:");
         String kodeord = prompt("Indtast kodeord:");
         final Database db = new Database(brugernavn, kodeord);
