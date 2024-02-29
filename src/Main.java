@@ -20,8 +20,14 @@ public class Main {
         return faseMenu.aktiver();
     }
 
-    static Medarbejder vaelgMedarbejder(Database db) {
+    static Medarbejder vaelgMedarbejder(Database db) throws SQLException {
         List<Medarbejder> medarbejdere = db.indlaesMedarbejdere();
+
+        if (medarbejdere.isEmpty()) {
+            System.out.println("Tilføj en medarbejder først.");
+            return null;
+        }
+
         List<Valgmulighed<Medarbejder>> valgmuligheder = medarbejdere.stream().map((medarbejder) ->
                 new Valgmulighed<>(medarbejder.navn, () -> medarbejder)).toList();
         Menu<Medarbejder> medarbejderMenu = new Menu<>(valgmuligheder);
@@ -35,6 +41,10 @@ public class Main {
 
         List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
         valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
+            Medarbejder medarbejder = vaelgMedarbejder(db);
+
+            if (medarbejder == null) return null;
+
             Kunde kunde = new Kunde(prompt("Indtast kundens navn:"));
             LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
             LocalDateTime stop;
@@ -50,7 +60,6 @@ public class Main {
             }
 
             Fase fase = vaelgFase();
-            Medarbejder medarbejder = vaelgMedarbejder(db);
             UseCase.opretAftale(db, start, stop, kunde, medarbejder, fase);
             return null;
         }));
