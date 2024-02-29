@@ -73,7 +73,9 @@ public class Main {
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Tilføj ny medarbejder", () -> {
-                System.out.println("Ikke implementeret.");
+                String medarbejderNavn = prompt("Indtast medarbejders brugernavn:");
+                String medarbejderKodeord = prompt("Indtast medarbejders kodeord:");
+                db.indsaetMedarbejder(new Medarbejder(medarbejderNavn), medarbejderKodeord);
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Slet en medarbejder", () -> {
