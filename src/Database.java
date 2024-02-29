@@ -56,7 +56,7 @@ public class Database {
 
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
-                VALUES (?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?);
                 """);
 
         st.setString(1, aftale.id.toString());
