@@ -13,6 +13,21 @@ public class Main {
         return sc.nextLine();
     }
 
+    static Fase vaelgFase() {
+        List<Valgmulighed<Fase>> faseValgmuligheder = Arrays.stream(Fase.values()).map((fase) ->
+                new Valgmulighed<>(fase.toString(), () -> fase)).toList();
+        Menu<Fase> faseMenu = new Menu<>(faseValgmuligheder);
+        return faseMenu.aktiver();
+    }
+
+    static Medarbejder vaelgMedarbejder(Database db) {
+        List<Medarbejder> medarbejdere = db.indlaesMedarbejdere();
+        List<Valgmulighed<Medarbejder>> valgmuligheder = medarbejdere.stream().map((medarbejder) ->
+                new Valgmulighed<>(medarbejder.navn, () -> medarbejder)).toList();
+        Menu<Medarbejder> medarbejderMenu = new Menu<>(valgmuligheder);
+        return medarbejderMenu.aktiver();
+    }
+
     public static void main(String[] args) throws SQLException {
         String brugernavn = prompt("Indtast brugernavn:");
         String kodeord = prompt("Indtast kodeord:");
@@ -20,7 +35,7 @@ public class Main {
 
         List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
         valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
-            String kunde = prompt("Indtast kundens navn:");
+            Kunde kunde = new Kunde(prompt("Indtast kundens navn:"));
             LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
             LocalDateTime stop;
 
@@ -34,12 +49,9 @@ public class Main {
                 System.out.println("Fejl: stoptidspunkt må ikke være tidligere end starttidspunktet.");
             }
 
-            List<Valgmulighed<Fase>> faseValgmuligheder = Arrays.stream(Fase.values()).map((fase) ->
-                    new Valgmulighed<>(fase.toString(), () -> fase)).toList();
-            Menu<Fase> faseMenu = new Menu<>(faseValgmuligheder);
-            Fase fase = faseMenu.aktiver();
-
-            UseCase.opretAftale(db, start, stop, kunde, fase);
+            Fase fase = vaelgFase();
+            Medarbejder medarbejder = vaelgMedarbejder(db);
+            UseCase.opretAftale(db, start, stop, kunde, medarbejder, fase);
             return null;
         }));
         valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {

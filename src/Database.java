@@ -24,24 +24,31 @@ public class Database {
                     Id VARCHAR(36) PRIMARY KEY,
                     Start DATETIME NOT NULL,
                     Stop DATETIME NOT NULL,
-                    Kunde TEXT NOT NULL,
-                    Fase TEXT NOT NULL
+                    Kunde INTEGER NOT NULL,
+                    Medarbejder INTEGER NOT NULL,
+                    Fase TEXT NOT NULL,
+                    FOREIGN KEY (Kunde) REFERENCES Kunde(Id),
+                    FOREIGN KEY (Medarbejder) REFERENCES Medarbejder(Id)
                 );""");
 
         this.conn.commit();
     }
 
     public void indsaetAftale(Aftale aftale) throws SQLException {
+        int kundeId = this.indsaetKunde(aftale.kunde);
+        int medarbejderId = this.indsaetMedarbejder(aftale.medarbejder);
+
         PreparedStatement st = this.conn.prepareStatement("""
-                INSERT INTO Aftale(Id, Start, Stop, Kunde, Fase)
+                INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
                 VALUES (?, ?, ?, ?, ?);
                 """);
 
         st.setString(1, aftale.id.toString());
         st.setTimestamp(2, Timestamp.valueOf(aftale.start));
         st.setTimestamp(3, Timestamp.valueOf(aftale.stop));
-        st.setString(4, aftale.kunde);
-        st.setString(5, aftale.fase.toString());
+        st.setInt(4, kundeId);
+        st.setInt(5, medarbejderId);
+        st.setString(6, aftale.fase.toString());
         st.executeUpdate();
         this.conn.commit();
     }

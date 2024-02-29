@@ -5,10 +5,11 @@ public class Aftale {
     public final UUID id;
     public LocalDateTime start;
     public LocalDateTime stop;
-    public String kunde;
+    public Kunde kunde;
+    public Medarbejder medarbejder;
     public Fase fase;
 
-    public Aftale(LocalDateTime start, LocalDateTime stop, String kunde, Fase fase) {
+    public Aftale(LocalDateTime start, LocalDateTime stop, Kunde kunde, Medarbejder medarbejder, Fase fase) {
         this.id = UUID.randomUUID();
         this.start = start;
         this.stop = stop;
