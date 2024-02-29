@@ -69,7 +69,46 @@ public class Database {
         this.conn.commit();
     }
 
-    private int indsaetMedarbejder(Medarbejder medarbejder) throws SQLException {
+    public void indsaetMedarbejder(Medarbejder medarbejder, String kodeord) throws SQLException {
+        {
+            PreparedStatement st = this.conn.prepareStatement("""
+                    SELECT 1 FROM Medarbejder
+                    WHERE LOWER(Navn) = ?
+                    LIMIT 1;
+                    """);
+            st.setString(1, medarbejder.navn);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Medarbejder ved navn '" + medarbejder.navn + "' eksisterer allerede i databasen.");
+                return;
+            }
+        }
+
+        {
+            PreparedStatement st = this.conn.prepareStatement("""
+                    CREATE USER ?@'%' IDENTIFIED BY ?;
+                    """);
+            st.setString(1, medarbejder.navn);
+            st.setString(2, kodeord);
+            st.executeUpdate();
+        }
+
+        {
+            PreparedStatement st = this.conn.prepareStatement("""
+                    GRANT ALL PRIVILEGES ON *.* TO ?@'%';
+                    """);
+            st.setString(1, medarbejder.navn);
+            st.executeUpdate();
+        }
+
+        {
+            PreparedStatement st = this.conn.prepareStatement("""
+                    FLUSH PRIVILEGES;
+                    """);
+            st.execute();
+        }
+
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Medarbejder (Navn)
                 VALUES (?);
@@ -77,10 +116,11 @@ public class Database {
 
         st.setString(1, medarbejder.navn);
         st.executeUpdate();
+        this.conn.commit();
 
         ResultSet keys = st.getGeneratedKeys();
         keys.next();
-        return keys.getInt(1);
+        keys.getInt(1);
     }
 
     private int indsaetKunde(Kunde kunde) throws SQLException {
