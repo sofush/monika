@@ -71,10 +71,9 @@ public class Database {
 
     private int indsaetMedarbejder(Medarbejder medarbejder) throws SQLException {
         PreparedStatement st = this.conn.prepareStatement("""
-                INSERT INTO Medarbejder(Navn)
-                VALUES (?)
-                SELECT LAST_INSERT_ID();
-                """);
+                INSERT INTO Medarbejder (Navn)
+                VALUES (?);
+                """, Statement.RETURN_GENERATED_KEYS);
 
         st.setString(1, medarbejder.navn);
         st.executeUpdate();
@@ -87,9 +86,8 @@ public class Database {
     private int indsaetKunde(Kunde kunde) throws SQLException {
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Kunde(Navn)
-                VALUES (?)
-                SELECT LAST_INSERT_ID();
-                """);
+                VALUES (?);
+                """, Statement.RETURN_GENERATED_KEYS);
 
         st.setString(1, kunde.navn);
         st.executeUpdate();
