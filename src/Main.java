@@ -80,6 +80,10 @@ public class Main {
                 System.out.println("Ikke implementeret.");
                 return null;
             }));
+            valgmuligheder.add(new Valgmulighed<>("Log ud", () -> {
+                System.exit(0);
+                return null;
+            }));
 
             Menu<Void> menu = new Menu<>(valgmuligheder);
             menu.aktiver();
