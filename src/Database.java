@@ -52,7 +52,24 @@ public class Database {
 
     public void indsaetAftale(Aftale aftale) throws SQLException {
         int kundeId = this.indsaetKunde(aftale.kunde);
-        int medarbejderId = this.indsaetMedarbejder(aftale.medarbejder);
+        int medarbejderId;
+
+        {
+            PreparedStatement st = this.conn.prepareStatement("""
+                    SELECT (Id) FROM Medarbejder
+                    WHERE LOWER(Navn) = (?)
+                    LIMIT 1;
+                    """);
+            st.setString(1, aftale.medarbejder.navn.toLowerCase());
+            ResultSet rs = st.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("Kunne ikke finde medarbejder ved navn \"" + aftale.medarbejder.navn + "\". Afbryder.");
+                return;
+            }
+
+            medarbejderId = rs.getInt(1);
+        }
 
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
