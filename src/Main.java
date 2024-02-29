@@ -39,52 +39,50 @@ public class Main {
         String kodeord = prompt("Indtast kodeord:");
         final Database db = new Database(brugernavn, kodeord);
 
-        List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
-        valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
-            Medarbejder medarbejder = vaelgMedarbejder(db);
+        while (true) {
+            List<Valgmulighed<Void>> valgmuligheder = new ArrayList<>();
+            valgmuligheder.add(new Valgmulighed<>("Opret en aftale", () -> {
+                Medarbejder medarbejder = vaelgMedarbejder(db);
 
-            if (medarbejder == null) return null;
+                if (medarbejder == null) return null;
 
-            Kunde kunde = new Kunde(prompt("Indtast kundens navn:"));
-            LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
-            LocalDateTime stop;
+                Kunde kunde = new Kunde(prompt("Indtast kundens navn:"));
+                LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
+                LocalDateTime stop;
 
-            while (true) {
-                stop = LocalDateTime.parse(prompt("Indtast stoptidspunkt:"));
+                while (true) {
+                    stop = LocalDateTime.parse(prompt("Indtast stoptidspunkt:"));
 
-                if (stop.isAfter(start)) {
-                    break;
+                    if (stop.isAfter(start)) {
+                        break;
+                    }
+
+                    System.out.println("Fejl: stoptidspunkt må ikke være tidligere end starttidspunktet.");
                 }
 
-                System.out.println("Fejl: stoptidspunkt må ikke være tidligere end starttidspunktet.");
-            }
+                Fase fase = vaelgFase();
+                UseCase.opretAftale(db, start, stop, kunde, medarbejder, fase);
+                return null;
+            }));
+            valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {
+                System.out.println("Ikke implementeret.");
+                return null;
+            }));
+            valgmuligheder.add(new Valgmulighed<>("Ret en aftale", () -> {
+                System.out.println("Ikke implementeret.");
+                return null;
+            }));
+            valgmuligheder.add(new Valgmulighed<>("Tilføj ny medarbejder", () -> {
+                System.out.println("Ikke implementeret.");
+                return null;
+            }));
+            valgmuligheder.add(new Valgmulighed<>("Slet en medarbejder", () -> {
+                System.out.println("Ikke implementeret.");
+                return null;
+            }));
 
-            Fase fase = vaelgFase();
-            UseCase.opretAftale(db, start, stop, kunde, medarbejder, fase);
-            return null;
-        }));
-        valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {
-            System.out.println("Ikke implementeret.");
-            System.exit(1);
-            return null;
-        }));
-        valgmuligheder.add(new Valgmulighed<>("Ret en aftale", () -> {
-            System.out.println("Ikke implementeret.");
-            System.exit(1);
-            return null;
-        }));
-        valgmuligheder.add(new Valgmulighed<>("Tilføj ny medarbejder", () -> {
-            System.out.println("Ikke implementeret.");
-            System.exit(1);
-            return null;
-        }));
-        valgmuligheder.add(new Valgmulighed<>("Slet en medarbejder", () -> {
-            System.out.println("Ikke implementeret.");
-            System.exit(1);
-            return null;
-        }));
-
-        Menu<Void> menu = new Menu<>(valgmuligheder);
-        menu.aktiver();
+            Menu<Void> menu = new Menu<>(valgmuligheder);
+            menu.aktiver();
+        }
     }
 }
