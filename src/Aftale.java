@@ -14,6 +14,7 @@ public class Aftale {
         this.start = start;
         this.stop = stop;
         this.kunde = kunde;
+        this.medarbejder = medarbejder;
         this.fase = fase;
     }
 
