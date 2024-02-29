@@ -140,7 +140,7 @@ public class Database {
         keys.getInt(1);
     }
 
-    private int indsaetKunde(Kunde kunde) throws SQLException {
+    public int indsaetKunde(Kunde kunde) throws SQLException {
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Kunde(Navn)
                 VALUES (?);
