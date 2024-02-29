@@ -29,7 +29,7 @@ class Database {
 	- {field} conn: java.sql.Connection
 	+ Database(String brugernavn, String kodeord)
 	+ void indsaetAftale(Aftale aftale)
-	+ void indsaetMedarbejder(Medarbejder medarbejder)
+	+ void indsaetMedarbejder(Medarbejder medarbejder, String kodeord)
 	+ void indsaetKunde(Kunde kunde)
 	+ List<Aftale> indlaesAftaler(String medarbejder, LocalDateTime min, LocalDateTime max)
 	+ List<Medarbejder> indlaesMedarbejdere()
