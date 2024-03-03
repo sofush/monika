@@ -1,5 +1,6 @@
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,20 @@ public class Main {
         return medarbejderMenu.aktiver();
     }
 
+    static LocalDateTime indtastTidspunkt(String spg) {
+        String indtastning;
+
+        while (true) {
+            indtastning = prompt(spg);
+
+            try {
+                return LocalDateTime.parse(indtastning);
+            } catch (DateTimeParseException e) {
+                System.out.println("Kunne ikke parse input. Prøv igen.");
+            }
+        }
+    }
+
     public static void main(String[] args) throws SQLException {
         String brugernavn = prompt("Indtast brugernavn:");
         String kodeord = prompt("Indtast kodeord:");
@@ -47,11 +62,11 @@ public class Main {
                 if (medarbejder == null) return null;
 
                 Kunde kunde = new Kunde(prompt("Indtast kundens navn:"));
-                LocalDateTime start = LocalDateTime.parse(prompt("Indtast starttidspunkt:"));
+                LocalDateTime start = indtastTidspunkt("Indtast starttidspunkt:");
                 LocalDateTime stop;
 
                 while (true) {
-                    stop = LocalDateTime.parse(prompt("Indtast stoptidspunkt:"));
+                    stop = indtastTidspunkt("Indtast stoptidspunkt:");
 
                     if (stop.isAfter(start)) {
                         break;
@@ -65,11 +80,62 @@ public class Main {
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Indlæs aftaler", () -> {
-                System.out.println("Ikke implementeret.");
+                Medarbejder medarbejder = vaelgMedarbejder(db);
+
+                if (medarbejder == null) return null;
+
+                LocalDateTime start = indtastTidspunkt("Indtast starttidspunkt for søgning:");
+                LocalDateTime stop = indtastTidspunkt("Indtast stoptidspunkt for søgning:");
+                List<Aftale> aftaler = db.indlaesAftaler(medarbejder, start, stop);
+
+                for (int i = 0; i < aftaler.size(); i++) {
+                    System.out.println("Aftale " + (i + 1) + ")");
+                    aftaler.get(i).toString()
+                            .lines()
+                            .forEach((linje) -> System.out.println("\t" + linje));
+                }
+
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Ret en aftale", () -> {
-                System.out.println("Ikke implementeret.");
+                String uuid = prompt("Indtast UUID for aftalen:");
+                Aftale aftale = db.indlaesAftale(uuid);
+
+                if (aftale == null) {
+                    System.out.println("Fejl: Aftalen med UUID `" + uuid + "` findes ikke i databasen.");
+                    return null;
+                }
+
+                List<Valgmulighed<Void>> subvalgmuligheder = new ArrayList<>();
+                subvalgmuligheder.add(new Valgmulighed<>("Starttidspunkt", () -> {
+                    aftale.start = indtastTidspunkt("Indtast nyt starttidspunkt:");
+                    return null;
+                }));
+                subvalgmuligheder.add(new Valgmulighed<>("Stoptidspunkt", () -> {
+                    aftale.stop = indtastTidspunkt("Indtast nyt stoptidspunkt:");
+                    return null;
+                }));
+                subvalgmuligheder.add(new Valgmulighed<>("Kunde", () -> {
+                    aftale.kunde = new Kunde(prompt("Indtast nyt kundenavn:"));
+                    return null;
+                }));
+                subvalgmuligheder.add(new Valgmulighed<>("Medarbejder", () -> {
+                    Medarbejder medarbejder = vaelgMedarbejder(db);
+
+                    if (medarbejder != null) {
+                        aftale.medarbejder = medarbejder;
+                    }
+
+                    return null;
+                }));
+                subvalgmuligheder.add(new Valgmulighed<>("Fase", () -> {
+                    aftale.fase = vaelgFase();
+                    return null;
+                }));
+                Menu<Void> menu = new Menu<>(subvalgmuligheder);
+                menu.aktiver();
+
+                db.indsaetAftale(aftale);
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Tilføj ny medarbejder", () -> {
@@ -79,7 +145,11 @@ public class Main {
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Slet en medarbejder", () -> {
-                System.out.println("Ikke implementeret.");
+                Medarbejder medarbejder = vaelgMedarbejder(db);
+
+                if (medarbejder == null) return null;
+
+                db.sletMedarbejder(medarbejder);
                 return null;
             }));
             valgmuligheder.add(new Valgmulighed<>("Log ud", () -> {
