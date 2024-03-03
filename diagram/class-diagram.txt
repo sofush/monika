@@ -16,7 +16,8 @@ class Aftale {
 	+ kunde: Kunde
 	+ medarbejder: Medarbejder
 	+ fase: Fase
-	+ Aftale(start, stop, kunde, fase)
+	+ Aftale(uuid, start, stop, kunde, medarbejder, fase)
+	+ Aftale(start, stop, kunde, medarbejder, fase)
 	+ boolean konflikterMed(Aftale anden)
 }
 enum Fase {
@@ -30,7 +31,9 @@ class Database {
 	+ Database(String brugernavn, String kodeord)
 	+ void indsaetAftale(Aftale aftale)
 	+ void indsaetMedarbejder(Medarbejder medarbejder, String kodeord)
-	+ void indsaetKunde(Kunde kunde)
+	+ int indsaetKunde(Kunde kunde)
+	+ void sletMedarbejder(Medarbejder medarbejder)
+	+ Aftale indlaesAftale(String uuid)
 	+ List<Aftale> indlaesAftaler(String medarbejder, LocalDateTime min, LocalDateTime max)
 	+ List<Medarbejder> indlaesMedarbejdere()
 }
