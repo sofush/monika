@@ -73,15 +73,25 @@ public class Database {
 
         PreparedStatement st = this.conn.prepareStatement("""
                 INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
-                VALUES (?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE Start = ?, Stop = ?, Kunde = ?, Medarbejder = ?, Fase = ?;
                 """);
 
+        // INSERT argumenter.
         st.setString(1, aftale.id.toString());
         st.setTimestamp(2, Timestamp.valueOf(aftale.start));
         st.setTimestamp(3, Timestamp.valueOf(aftale.stop));
         st.setInt(4, kundeId);
         st.setInt(5, medarbejderId);
         st.setString(6, aftale.fase.toString());
+
+        // UPDATE argumenter.
+        st.setTimestamp(7, Timestamp.valueOf(aftale.start));
+        st.setTimestamp(8, Timestamp.valueOf(aftale.stop));
+        st.setInt(9, kundeId);
+        st.setInt(10, medarbejderId);
+        st.setString(11, aftale.fase.toString());
+
         st.executeUpdate();
         this.conn.commit();
     }
