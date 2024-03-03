@@ -9,6 +9,15 @@ public class Aftale {
     public Medarbejder medarbejder;
     public Fase fase;
 
+    public Aftale(String uuid, LocalDateTime start, LocalDateTime stop, Kunde kunde, Medarbejder medarbejder, Fase fase) {
+        this.id = UUID.fromString(uuid);
+        this.start = start;
+        this.stop = stop;
+        this.kunde = kunde;
+        this.medarbejder = medarbejder;
+        this.fase = fase;
+    }
+
     public Aftale(LocalDateTime start, LocalDateTime stop, Kunde kunde, Medarbejder medarbejder, Fase fase) {
         this.id = UUID.randomUUID();
         this.start = start;
