@@ -56,10 +56,10 @@ public class Database {
 
         {
             PreparedStatement st = this.conn.prepareStatement("""
-                    SELECT (Id) FROM Medarbejder
-                    WHERE LOWER(Navn) = (?)
-                    LIMIT 1;
-                    """);
+                SELECT (Id) FROM Medarbejder
+                WHERE LOWER(Navn) = (?)
+                LIMIT 1;
+                """);
             st.setString(1, aftale.medarbejder.navn.toLowerCase());
             ResultSet rs = st.executeQuery();
 
@@ -72,10 +72,10 @@ public class Database {
         }
 
         PreparedStatement st = this.conn.prepareStatement("""
-                INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
-                VALUES (?, ?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE Start = ?, Stop = ?, Kunde = ?, Medarbejder = ?, Fase = ?;
-                """);
+            INSERT INTO Aftale(Id, Start, Stop, Kunde, Medarbejder, Fase)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE Start = ?, Stop = ?, Kunde = ?, Medarbejder = ?, Fase = ?;
+            """);
 
         // INSERT argumenter.
         st.setString(1, aftale.id.toString());
@@ -99,10 +99,10 @@ public class Database {
     public void indsaetMedarbejder(Medarbejder medarbejder, String kodeord) throws SQLException {
         {
             PreparedStatement st = this.conn.prepareStatement("""
-                    SELECT 1 FROM Medarbejder
-                    WHERE LOWER(Navn) = ?
-                    LIMIT 1;
-                    """);
+                SELECT 1 FROM Medarbejder
+                WHERE LOWER(Navn) = ?
+                LIMIT 1;
+                """);
             st.setString(1, medarbejder.navn);
             ResultSet rs = st.executeQuery();
 
@@ -114,8 +114,8 @@ public class Database {
 
         {
             PreparedStatement st = this.conn.prepareStatement("""
-                    CREATE USER ?@'%' IDENTIFIED BY ?;
-                    """);
+                CREATE USER ?@'%' IDENTIFIED BY ?;
+                """);
             st.setString(1, medarbejder.navn);
             st.setString(2, kodeord);
             st.executeUpdate();
@@ -123,23 +123,23 @@ public class Database {
 
         {
             PreparedStatement st = this.conn.prepareStatement("""
-                    GRANT ALL PRIVILEGES ON *.* TO ?@'%';
-                    """);
+                GRANT ALL PRIVILEGES ON *.* TO ?@'%';
+                """);
             st.setString(1, medarbejder.navn);
             st.executeUpdate();
         }
 
         {
             PreparedStatement st = this.conn.prepareStatement("""
-                    FLUSH PRIVILEGES;
-                    """);
+                FLUSH PRIVILEGES;
+                """);
             st.execute();
         }
 
         PreparedStatement st = this.conn.prepareStatement("""
-                INSERT INTO Medarbejder (Navn)
-                VALUES (?);
-                """, Statement.RETURN_GENERATED_KEYS);
+            INSERT INTO Medarbejder (Navn)
+            VALUES (?);
+            """, Statement.RETURN_GENERATED_KEYS);
 
         st.setString(1, medarbejder.navn);
         st.executeUpdate();
@@ -152,9 +152,9 @@ public class Database {
 
     public int indsaetKunde(Kunde kunde) throws SQLException {
         PreparedStatement st = this.conn.prepareStatement("""
-                INSERT INTO Kunde(Navn)
-                VALUES (?);
-                """, Statement.RETURN_GENERATED_KEYS);
+            INSERT INTO Kunde(Navn)
+            VALUES (?);
+            """, Statement.RETURN_GENERATED_KEYS);
 
         st.setString(1, kunde.navn);
         st.executeUpdate();
@@ -167,8 +167,8 @@ public class Database {
     public List<Medarbejder> indlaesMedarbejdere() throws SQLException {
         Statement st = this.conn.createStatement();
         ResultSet rs = st.executeQuery("""
-                SELECT (Navn) FROM Medarbejder;
-                """);
+            SELECT (Navn) FROM Medarbejder;
+            """);
 
         List<Medarbejder> liste = new ArrayList<>();
 
