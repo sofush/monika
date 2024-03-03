@@ -22,4 +22,14 @@ public class Aftale {
         return (anden.start.isBefore(this.stop) && anden.start.isAfter(this.start))
                 || (anden.stop.isBefore(this.stop) && anden.stop.isAfter(this.start));
     }
+
+    @Override
+    public String toString() {
+        return "Id: " + this.id + '\n' +
+                "Start: " + this.start + '\n' +
+                "Stop: " + this.stop + '\n' +
+                "Kunde: " + this.kunde + '\n' +
+                "Medarbejder: " + this.medarbejder + '\n' +
+                "Fase: " + this.fase;
+    }
 }
