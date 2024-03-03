@@ -61,7 +61,7 @@ public class Menu<T> {
                 i = this.valgmuligheder.indexOf(valgmulighed.get());
             } else {
                 // Prøv igen.
-                aktiver();
+                return aktiver();
             }
         }
 
